@@ -1,4 +1,4 @@
-# TradeNodeX Control Center
+# TradeNodeX AI Copy Trading Control Center
 
 TradeNodeX is a self-hosted, single-tenant copy-trading control center for private operator use. The current repository ships a FastAPI backend, a React control plane, execution workers, audit logs, equity analytics, multi-language UI support, and multi-exchange connectivity.
 
