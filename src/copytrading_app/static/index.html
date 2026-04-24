@@ -1,0 +1,866 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TradeNodeX Control Center</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar l1">
+        <div class="brand-stack">
+          <p class="eyebrow" data-i18n="brand.kicker">TradeNodeX</p>
+          <h1 data-i18n="brand.wordmark">TRADENODEX</h1>
+          <p class="brand-subline" data-i18n="brand.subline">Institutional Digital Asset Gateway</p>
+        </div>
+        <div class="rail-grid">
+          <div class="rail-card">
+            <span class="rail-label" data-i18n="topbar.connectivity">Connectivity</span>
+            <strong class="rail-value" id="status-latency">NODE-01 | 12ms</strong>
+          </div>
+          <div class="rail-card">
+            <span class="rail-label" data-i18n="topbar.stream">Realtime Stream</span>
+            <div class="live-indicator" id="live-indicator">
+              <span class="live-dot"></span>
+              <span id="live-label" data-i18n="status.liveOffline">Realtime stream offline</span>
+            </div>
+          </div>
+          <div class="rail-card operator-card">
+            <span class="rail-label" data-i18n="topbar.operator">Operator</span>
+            <strong class="rail-value">TNX / PRIMARY</strong>
+          </div>
+        </div>
+      </header>
+
+      <div class="terminal-stage">
+        <aside class="tool-rail l2" aria-label="Terminal tools">
+          <button class="tool-button is-active" data-tab-jump="signals" type="button" aria-label="Signals">鈱?/button>
+          <button class="tool-button" data-tab-jump="copy-trades" type="button" aria-label="Copy Routing">鈬?/button>
+          <button class="tool-button" data-tab-jump="manage-signals" type="button" aria-label="API Registry">鈱?/button>
+          <button class="tool-button" data-tab-jump="builder" type="button" aria-label="Studio">鈼?/button>
+          <button class="tool-button" data-tab-jump="logs" type="button" aria-label="Audit Logs">鈭?/button>
+          <button class="tool-button" data-tab-jump="positions" type="button" aria-label="Equity List">鈼?/button>
+          <div class="tool-rail-spacer"></div>
+          <button class="tool-button" id="tool-refresh" type="button" aria-label="Refresh all">鈫?/button>
+          <button class="tool-button" type="button" aria-label="Search">鈱?/button>
+        </aside>
+        <div class="workspace-main">
+
+      <section class="workspace-toolbar l2">
+        <div class="toolbar-left">
+          <div class="search-block">
+            <label for="workspace-search" class="toolbar-label" data-i18n="toolbar.searchLabel">Workspace Search</label>
+            <div class="search-shell">
+              <input id="workspace-search" class="toolbar-input" placeholder="Search signals, accounts, symbols, logs" data-i18n-placeholder="toolbar.searchPlaceholder" />
+              <button id="workspace-search-action" type="button" class="toolbar-button secondary" data-i18n="toolbar.searchAction">Find</button>
+            </div>
+          </div>
+          <div class="summary-strip">
+            <span class="summary-chip" id="summary-environment">ENV: TESTNET</span>
+            <span class="summary-chip" id="summary-timezone">TZ: Asia/Tokyo</span>
+            <span class="summary-chip" id="summary-display-currency">Display Currency: USD</span>
+            <span class="summary-chip" id="summary-language-tier">Tier 1</span>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <label class="toolbar-control">
+            <span class="toolbar-label" data-i18n="toolbar.language">Language</span>
+            <select id="language-selector" class="toolbar-select" aria-label="Language"></select>
+          </label>
+          <label class="toolbar-control">
+            <span class="toolbar-label" data-i18n="toolbar.currency">Display Currency</span>
+            <select id="currency-selector" class="toolbar-select" aria-label="Display Currency"></select>
+          </label>
+          <label class="toolbar-control">
+            <span class="toolbar-label" data-i18n="toolbar.density">Density</span>
+            <select id="density-selector" class="toolbar-select" aria-label="Density">
+              <option value="standard">Standard</option>
+              <option value="compact">Compact</option>
+            </select>
+          </label>
+          <label class="toolbar-control">
+            <span class="toolbar-label" data-i18n="toolbar.fontScale">Font Scale</span>
+            <select id="font-scale-selector" class="toolbar-select" aria-label="Font Scale">
+              <option value="default">Default</option>
+              <option value="small">Small</option>
+              <option value="large">Large</option>
+            </select>
+          </label>
+          <label class="toolbar-control">
+            <span class="toolbar-label" data-i18n="toolbar.motion">Motion</span>
+            <select id="motion-selector" class="toolbar-select" aria-label="Motion">
+              <option value="full">Full</option>
+              <option value="reduced">Reduced</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="status-strip l2" id="health-strip">Loading TradeNodeX status...</section>
+
+      <section class="overview-grid l3" id="overview-metrics">
+        <div class="metrics-group">
+          <div class="group-header">
+            <h2 data-i18n="metrics.runtimeTitle">Runtime</h2>
+            <p data-i18n="metrics.runtimeSubtitle">Signals, routing, followers, and live audit throughput.</p>
+          </div>
+          <div class="metrics-cards" id="runtime-metrics"></div>
+        </div>
+        <div class="metrics-group performance-group">
+          <div class="group-header">
+            <h2 data-i18n="metrics.performanceTitle">Performance</h2>
+            <p data-i18n="metrics.performanceSubtitle">Display-currency analytics for exposure, pnl, and fills.</p>
+          </div>
+          <div class="metrics-cards" id="performance-metrics"></div>
+          <div class="fx-strip" id="fx-strip">Display currency converted from USD | FX source pending</div>
+        </div>
+      </section>
+
+      <nav class="tabs l2" role="tablist" aria-label="TradeNodeX workspaces">
+        <button class="tab is-active" data-tab="signals" role="tab" aria-selected="true" data-i18n="tabs.signals">Signals</button>
+        <button class="tab" data-tab="copy-trades" role="tab" aria-selected="false" data-i18n="tabs.copyTrades">Copy Routing</button>
+        <button class="tab" data-tab="manage-signals" role="tab" aria-selected="false" data-i18n="tabs.apiRegistry">API Registry</button>
+        <button class="tab" data-tab="builder" role="tab" aria-selected="false" data-i18n="tabs.studio">Studio</button>
+        <button class="tab" data-tab="logs" role="tab" aria-selected="false" data-i18n="tabs.logs">Audit Logs</button>
+        <button class="tab" data-tab="positions" role="tab" aria-selected="false" data-i18n="tabs.positions">Equity List</button>
+      </nav>
+
+      <main class="content">
+        <section class="panel active l3" id="tab-signals">
+          <div class="panel-header">
+            <div>
+              <h2 data-i18n="signals.title">Operational Signals</h2>
+              <p data-i18n="signals.subtitle">Terminal-grade signal cards with routing readiness and direct execution entry.</p>
+            </div>
+            <div class="header-actions">
+              <button id="refresh-dashboard" type="button" class="secondary" data-i18n="actions.refresh">Refresh</button>
+              <button id="open-create-signal" type="button" class="primary" data-i18n="actions.addSignal">Add Signal</button>
+            </div>
+          </div>
+          <div id="signal-cards" class="signal-grid"></div>
+        </section>
+
+        <section class="panel l3" id="tab-copy-trades">
+          <div class="panel-header">
+            <div>
+              <h2 data-i18n="copyTrades.title">Copy Routing</h2>
+              <p data-i18n="copyTrades.subtitle">Route design, 1:1 exact emphasis, execution templates, and operator controls.</p>
+            </div>
+            <div class="header-actions">
+              <button id="refresh-copytrades" type="button" class="secondary" data-i18n="actions.refresh">Refresh</button>
+              <button id="open-create-copytrade" type="button" class="primary" data-i18n="actions.addCopyTrade">Add Copy Trade</button>
+            </div>
+          </div>
+          <div class="split-layout">
+            <div class="table-panel l4">
+              <table class="data-table" id="copy-trades-table-shell">
+                <thead>
+                  <tr>
+                    <th data-i18n="table.name">Name</th>
+                    <th data-i18n="table.signal">Signal</th>
+                    <th data-i18n="table.mode">Mode</th>
+                    <th data-i18n="table.status">Status</th>
+                    <th data-i18n="table.validation">Validation</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="copy-trades-table"></tbody>
+              </table>
+            </div>
+            <aside class="editor-panel l4" id="copytrade-editor">
+              <div class="editor-empty" id="copytrade-empty" data-i18n="copyTrades.empty">Select a copy trade to edit command template, mode, and risk constraints.</div>
+              <form id="copytrade-form" class="editor-form hidden">
+                <input type="hidden" name="copy_trade_id" />
+                <div class="editor-topline">
+                  <div>
+                    <h3 id="copytrade-editor-title">Edit Copy Trade</h3>
+                    <div class="validation-strip" id="copytrade-validation-strip"></div>
+                  </div>
+                  <label class="toggle-pill">
+                    <input id="copytrade-enabled" type="checkbox" name="enabled" />
+                    <span data-i18n="table.enabled">Enabled</span>
+                  </label>
+                </div>
+
+                <section class="editor-section">
+                  <div class="section-head">
+                    <h4 data-i18n="copyTrades.baseBinding">Base Binding</h4>
+                    <p data-i18n="copyTrades.baseBindingNote">Primary route mapping between signal source and follower account.</p>
+                  </div>
+                  <div class="form-grid two-col">
+                    <label>
+                      <span data-i18n="table.name">Name</span>
+                      <input name="name" required />
+                    </label>
+                    <label>
+                      <span data-i18n="table.signal">Signal</span>
+                      <select id="copytrade-editor-signal" name="signal_source_id"></select>
+                    </label>
+                    <label>
+                      <span data-i18n="metrics.followers">Follower</span>
+                      <select id="copytrade-editor-follower" name="follower_account_id"></select>
+                    </label>
+                    <label>
+                      <span data-i18n="copyTrades.overrideLeverage">Override Leverage</span>
+                      <input name="override_leverage" placeholder="Auto" />
+                    </label>
+                  </div>
+                </section>
+
+                <section class="editor-section">
+                  <div class="section-head">
+                    <h4 data-i18n="copyTrades.modeSection">Copy Mode</h4>
+                    <p data-i18n="copyTrades.modeSectionNote">Exact mode is visually emphasized and scale is conditional.</p>
+                  </div>
+                  <div class="mode-cards" id="copy-mode-cards">
+                    <label class="mode-card exact-card">
+                      <input type="radio" name="copy_mode" value="EXACT" />
+                      <span class="mode-title">1:1 Exact</span>
+                      <span class="mode-note" data-i18n="copyTrades.exactNote">Follower mirrors the source quantity and constraints.</span>
+                    </label>
+                    <label class="mode-card">
+                      <input type="radio" name="copy_mode" value="SCALE" />
+                      <span class="mode-title" data-i18n="copyTrades.scaleMode">Scale</span>
+                      <span class="mode-note" data-i18n="copyTrades.scaleNote">Follower applies a quantity multiplier.</span>
+                    </label>
+                  </div>
+                  <div class="form-grid two-col" id="scale-factor-row">
+                    <label>
+                      <span data-i18n="copyTrades.scaleFactor">Scale Factor</span>
+                      <input name="scale_factor" value="1" />
+                    </label>
+                  </div>
+                </section>
+
+                <section class="editor-section">
+                  <div class="section-head">
+                    <h4 data-i18n="copyTrades.executionTemplate">Execution Template</h4>
+                    <button id="toggle-command-template" type="button" class="secondary small" data-i18n="actions.toggleTemplate">Toggle Template</button>
+                  </div>
+                  <div class="template-preview" id="copytrade-command-preview">No command template saved.</div>
+                  <div id="copytrade-command-wrap" class="hidden">
+                    <label>
+                      <span data-i18n="copyTrades.tradeCommand">Trade Command</span>
+                      <textarea name="command_template" rows="8"></textarea>
+                    </label>
+                  </div>
+                </section>
+
+                <section class="editor-section">
+                  <div class="section-head">
+                    <h4 data-i18n="copyTrades.riskNotes">Risk & Operator Notes</h4>
+                    <p data-i18n="copyTrades.riskNotesNote">Use this as controlled operating instructions and audit context.</p>
+                  </div>
+                  <label>
+                    <span data-i18n="common.notes">Notes</span>
+                    <textarea name="notes" rows="5" data-i18n-placeholder="copyTrades.notesPlaceholder" placeholder="Execution rules, risk constraints, and operator notes"></textarea>
+                  </label>
+                </section>
+
+                <div class="editor-actions">
+                  <button id="copytrade-cancel" type="button" class="secondary" data-i18n="actions.back">Back</button>
+                  <button id="copytrade-delete" type="button" class="danger" data-i18n="actions.delete">Delete</button>
+                  <button type="submit" class="primary" data-i18n="actions.save">Save</button>
+                </div>
+              </form>
+            </aside>
+          </div>
+        </section>
+
+        <section class="panel l3" id="tab-manage-signals">
+          <div class="panel-header">
+            <div>
+              <h2 data-i18n="registry.title">API Registry</h2>
+              <p data-i18n="registry.subtitle">Signal masters and follower credentials with readiness dimensions and security guidance.</p>
+            </div>
+            <div class="header-actions">
+              <button id="open-create-follower" type="button" class="secondary" data-i18n="actions.addApiAccount">Add API Account</button>
+              <button id="open-create-signal-secondary" type="button" class="primary" data-i18n="actions.addSignal">Add Signal</button>
+            </div>
+          </div>
+
+          <div class="security-banner l4">
+            <div class="banner-title" data-i18n="registry.securityTitle">Credential Operating Rules</div>
+            <ul class="security-list">
+              <li data-i18n="registry.ruleTradeOnly">Enable trade permissions only.</li>
+              <li data-i18n="registry.ruleNoWithdrawals">Never enable withdrawals.</li>
+              <li data-i18n="registry.ruleWhitelist">Use recommended IP whitelist where supported.</li>
+              <li data-i18n="registry.ruleOkxPassphrase">OKX requires API passphrase.</li>
+              <li data-i18n="registry.ruleEncrypted">Credentials are stored encrypted at rest.</li>
+            </ul>
+          </div>
+
+          <div class="split-layout registry-layout">
+            <div class="table-panel l4">
+              <div class="table-panel-header">
+                <h3 data-i18n="registry.signalSources">Signal Sources</h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="table.name">Name</th>
+                    <th data-i18n="table.exchange">Exchange</th>
+                    <th data-i18n="table.pairs">Pairs</th>
+                    <th data-i18n="table.validation">Validation</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="manage-signals-table"></tbody>
+              </table>
+            </div>
+            <div class="table-panel l4">
+              <div class="table-panel-header">
+                <h3 data-i18n="registry.apiAccounts">API Accounts</h3>
+                <button id="refresh-followers" type="button" class="secondary small" data-i18n="actions.refresh">Refresh</button>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="table.name">Name</th>
+                    <th data-i18n="table.exchange">Exchange</th>
+                    <th data-i18n="registry.readiness">Readiness</th>
+                    <th data-i18n="table.validation">Validation</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="followers-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel l3" id="tab-builder">
+          <div class="studio-shell">
+            <header class="panel-header">
+              <div>
+                <p class="eyebrow">Execution Studio</p>
+                <h2 id="builder-title">TradeNodeX Binance Futures</h2>
+                <div class="studio-links" id="builder-links">
+                  <a id="builder-link-api" href="#">Add API Key</a>
+                  <span>|</span>
+                  <a id="builder-link-guide" href="#">How-to</a>
+                  <span>|</span>
+                  <a id="builder-link-register" href="#">Register</a>
+                </div>
+              </div>
+              <div class="studio-balance" id="builder-balance">Connected environment: --</div>
+            </header>
+
+            <div class="product-tabs" id="builder-product-tabs">
+              <button type="button" class="product-tab is-active" data-product="USD_M">USD-M Futures</button>
+              <button type="button" class="product-tab" data-product="COIN_M">COIN-M Futures</button>
+            </div>
+
+            <form id="builder-form" class="studio-form">
+              <input type="hidden" id="builder-product-type" name="product_type" value="USD_M" />
+              <input type="hidden" id="builder-action-input" name="action" value="BUY" />
+              <input type="hidden" id="builder-signal-source-id" name="signal_source_id" />
+              <div class="form-grid four-col">
+                <label>
+                  <span data-i18n="studio.presetName">Preset Name</span>
+                  <input id="builder-name" name="name" placeholder="Signal Builder Profile" data-i18n-placeholder="studio.presetPlaceholder" />
+                </label>
+                <label>
+                  <span data-i18n="table.exchange">Exchange</span>
+                  <select id="builder-exchange" name="exchange">
+                    <option value="BINANCE">BINANCE</option>
+                    <option value="BYBIT">BYBIT</option>
+                    <option value="OKX">OKX</option>
+                    <option value="COINBASE">COINBASE</option>
+                    <option value="KRAKEN">KRAKEN</option>
+                    <option value="BITMEX">BITMEX</option>
+                    <option value="GATEIO">GATEIO</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="common.environment">Environment</span>
+                  <select id="builder-environment" name="environment">
+                    <option value="MAINNET">MAINNET</option>
+                    <option value="TESTNET">TESTNET</option>
+                    <option value="DEMO">DEMO</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="registry.apiAccount">API Account</span>
+                  <select id="builder-account" name="account_id"></select>
+                </label>
+              </div>
+
+              <section class="studio-block action-selector">
+                <div class="segment-group" id="builder-action-group">
+                  <button type="button" class="segment is-active" data-value="BUY">BUY</button>
+                  <button type="button" class="segment" data-value="SELL">SELL</button>
+                  <button type="button" class="segment" data-value="CANCEL_ORDERS">Cancel Orders</button>
+                  <button type="button" class="segment" data-value="CLOSE_POSITION">Close Position</button>
+                </div>
+                <div class="studio-context" id="builder-action-caption">BUY route: build an opening or add-position command for the selected exchange account.</div>
+              </section>
+
+              <section class="studio-layout">
+                <div class="studio-main">
+                  <section class="studio-block shared-entry">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.executionControls">Execution Controls</h3>
+                    </div>
+                    <div class="form-grid four-col compact">
+                      <label>
+                        <span data-i18n="table.pair">Pair</span>
+                        <select id="builder-symbol" name="symbol"></select>
+                      </label>
+                      <label>
+                        <span data-i18n="studio.orderType">Order Type</span>
+                        <select id="builder-order-type" name="order_type">
+                          <option value="MARKET">Market</option>
+                          <option value="LIMIT">Limit</option>
+                          <option value="STOP_MARKET">Stop-Loss</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span data-i18n="studio.price">Price</span>
+                        <input name="limit_price" placeholder="Optional" data-i18n-placeholder="common.optional" />
+                      </label>
+                      <label>
+                        <span data-i18n="studio.stopPrice">Stop Price</span>
+                        <input name="stop_price" placeholder="Optional" data-i18n-placeholder="common.optional" />
+                      </label>
+                    </div>
+                  </section>
+
+                  <section class="studio-block action-panel" id="trade-entry-panel">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.orderEntry">Order Entry</h3>
+                    </div>
+                    <div class="option-row" id="quantity-mode-group">
+                      <label class="radio-pill"><input type="radio" name="quantity_mode" value="ABSOLUTE" checked /><span data-i18n="studio.quantity.absolute">Use absolute value</span></label>
+                      <label class="radio-pill"><input type="radio" name="quantity_mode" value="PERCENT_AVAILABLE" /><span data-i18n="studio.quantity.available">Use percent (Available Balance)</span></label>
+                      <label class="radio-pill"><input type="radio" name="quantity_mode" value="PERCENT_WALLET" /><span data-i18n="studio.quantity.wallet">Use percent (Wallet)</span></label>
+                      <label class="radio-pill"><input type="radio" name="quantity_mode" value="RISK_PERCENT" /><span data-i18n="studio.quantity.risk">Risk %</span></label>
+                      <label class="radio-pill"><input type="radio" name="quantity_mode" value="COPY_TRADER" /><span data-i18n="studio.quantity.copyTrader">Use from copy trader</span></label>
+                    </div>
+                    <div class="form-grid four-col compact">
+                      <label><span data-i18n="studio.units">Units / Cost</span><input name="quantity_value" placeholder="1" /></label>
+                      <label><span data-i18n="studio.leverage">Leverage</span><input name="leverage" value="10" /></label>
+                      <label>
+                        <span data-i18n="studio.marginMode">Margin Mode</span>
+                        <select name="margin_mode">
+                          <option value="ISOLATED">ISOLATED</option>
+                          <option value="CROSS">CROSS</option>
+                        </select>
+                      </label>
+                      <label><span data-i18n="studio.delaySeconds">Delay Seconds</span><input name="delay_seconds" value="0" /></label>
+                    </div>
+                  </section>
+
+                  <section class="studio-block action-panel hidden" id="cancel-orders-panel">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.cancelScope">Cancel Scope</h3>
+                      <p data-i18n="studio.cancelScopeNote">Clear working orders without changing the current position.</p>
+                    </div>
+                    <div class="toggle-grid">
+                      <label class="toggle-pill"><input type="checkbox" name="cancel_all_orders" /><span data-i18n="studio.cancelAll">Cancel all orders</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="cancel_dca_orders" /><span data-i18n="studio.cancelDca">Cancel DCA orders</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="broadcast_trade" /><span data-i18n="studio.broadcastTrade">Broadcast Trade</span></label>
+                    </div>
+                  </section>
+
+                  <section class="studio-block action-panel hidden" id="close-position-panel">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.closeScope">Close Position Scope</h3>
+                      <p data-i18n="studio.closeScopeNote">Target the full book, long-only, short-only, or partial close logic.</p>
+                    </div>
+                    <div class="toggle-grid">
+                      <label class="toggle-pill"><input type="checkbox" name="close_all" /><span data-i18n="studio.closeAll">Close All</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_long" /><span data-i18n="studio.closeLong">Close Long</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_short" /><span data-i18n="studio.closeShort">Close Short</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="partial_close" /><span data-i18n="studio.partialClose">Partial Close</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_by_limit_order" /><span data-i18n="studio.closeByLimit">Close by limit order</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_in_profit_only" /><span data-i18n="studio.closeProfitOnly">Only Close in Profit</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_current_position" /><span data-i18n="studio.closeCurrentPosition">Close Current Position</span></label>
+                    </div>
+                  </section>
+
+                  <section class="studio-block">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.riskControls">Risk Controls</h3>
+                    </div>
+                    <div class="form-grid four-col compact">
+                      <label><span data-i18n="studio.stopLoss">Stop Loss %</span><input name="stop_loss_percent" /></label>
+                      <label class="toggle-pill"><input type="checkbox" name="hedge_mode" /><span data-i18n="studio.hedgeMode">Hedge Mode</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="prevent_pyramiding" /><span data-i18n="studio.preventPyramiding">Prevent Pyramiding</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="cancel_pending_orders" /><span data-i18n="studio.cancelPendingOrders">Cancel Pending Orders</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="close_in_profit_only" /><span data-i18n="studio.closeProfitOnly">Only Close in Profit</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="broadcast_trade" /><span data-i18n="studio.broadcastTrade">Broadcast Trade</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="create_copy_trade_signal" /><span data-i18n="studio.createCopySignal">Create copy-trade signal</span></label>
+                      <label class="toggle-pill"><input type="checkbox" name="use_dca" /><span data-i18n="studio.useDca">Use DCA</span></label>
+                    </div>
+                    <div class="tp-header">
+                      <span data-i18n="studio.takeProfitSteps">Take-Profit Steps</span>
+                      <button id="add-tp-step" type="button" class="secondary small" data-i18n="actions.addTakeProfit">Add Take-Profit-Step</button>
+                    </div>
+                    <div id="tp-steps" class="tp-steps"></div>
+                  </section>
+                </div>
+
+                <div class="studio-side">
+                  <section class="studio-block">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.generatedCommand">Generated Command</h3>
+                    </div>
+                    <textarea id="command-output" rows="10" placeholder="Generated TradeNodeX command JSON" data-i18n-placeholder="studio.commandPlaceholder"></textarea>
+                  </section>
+                  <section class="studio-block">
+                    <div class="section-head">
+                      <h3 data-i18n="studio.lastExecutionResponse">Last Execution Response</h3>
+                    </div>
+                    <textarea id="execution-output" rows="10" readonly></textarea>
+                  </section>
+                </div>
+              </section>
+
+              <div class="builder-actions">
+                <button id="generate-command" type="button" class="primary" data-i18n="actions.generateCopyTrade">Generate Copy-Trade</button>
+                <button id="copy-command" type="button" class="secondary" data-i18n="actions.copy">Copy</button>
+                <button id="save-command" type="button" class="secondary" data-i18n="actions.save">Save</button>
+                <button id="execute-command" type="button" class="secondary" data-i18n="actions.executeNow">Execute now!</button>
+              </div>
+            </form>
+
+            <div class="split-layout">
+              <section class="table-panel l4">
+                <div class="table-panel-header">
+                  <h3 data-i18n="studio.savedPresets">Saved Builder Presets</h3>
+                  <button id="refresh-presets" type="button" class="secondary small" data-i18n="actions.refresh">Refresh</button>
+                </div>
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="table.name">Name</th>
+                      <th data-i18n="table.exchange">Exchange</th>
+                      <th data-i18n="common.environment">Environment</th>
+                      <th data-i18n="table.signalSource">Signal Source</th>
+                      <th data-i18n="table.created">Created</th>
+                    </tr>
+                  </thead>
+                  <tbody id="presets-table"></tbody>
+                </table>
+              </section>
+              <section class="table-panel l4">
+                <div class="table-panel-header">
+                  <div>
+                    <h3 data-i18n="studio.liveQueue">Live Execution Queue</h3>
+                    <p id="execution-feed-status" data-i18n="studio.liveQueueWaiting">Waiting for realtime snapshots.</p>
+                  </div>
+                </div>
+                <table class="data-table" id="execution-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="table.signal">Signal</th>
+                      <th data-i18n="metrics.followers">Follower</th>
+                      <th data-i18n="table.symbol">Symbol</th>
+                      <th data-i18n="table.action">Action</th>
+                      <th data-i18n="table.status">Status</th>
+                      <th data-i18n="table.queue">Queue</th>
+                      <th data-i18n="studio.latency">Latency</th>
+                    </tr>
+                  </thead>
+                  <tbody id="live-executions-table"></tbody>
+                </table>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel l3" id="tab-logs">
+          <div class="panel-header">
+            <div>
+              <h2 data-i18n="logs.title">Audit Logs</h2>
+              <p data-i18n="logs.subtitle">Structured severity, quick filters, detail inspector, and PnL analysis.</p>
+            </div>
+            <div class="header-actions">
+              <button id="refresh-logs" type="button" class="secondary" data-i18n="actions.refreshLogs">Refresh Logs</button>
+            </div>
+          </div>
+
+          <div class="logs-shell">
+            <div class="logs-main">
+              <div class="quick-filter-row" id="log-quick-filters"></div>
+              <div class="log-filters l4">
+                <select id="log-exchange-filter">
+                  <option value="">All Exchanges</option>
+                  <option value="BINANCE">BINANCE</option>
+                  <option value="BYBIT">BYBIT</option>
+                  <option value="OKX">OKX</option>
+                  <option value="COINBASE">COINBASE</option>
+                  <option value="KRAKEN">KRAKEN</option>
+                  <option value="BITMEX">BITMEX</option>
+                  <option value="GATEIO">GATEIO</option>
+                </select>
+                <select id="log-type-filter">
+                  <option value="">All Types</option>
+                  <option value="INFO">INFO</option>
+                  <option value="WARNING">WARNING</option>
+                  <option value="ERROR">ERROR</option>
+                  <option value="EXECUTION">EXECUTION</option>
+                  <option value="RECONCILE">RECONCILE</option>
+                  <option value="MANUAL">MANUAL</option>
+                  <option value="SIGNAL">SIGNAL</option>
+                </select>
+                <select id="log-sort-by">
+                  <option value="timestamp">Timestamp</option>
+                  <option value="pnl">PnL</option>
+                </select>
+                <select id="log-sort-order">
+                  <option value="desc">DESC</option>
+                  <option value="asc">ASC</option>
+                </select>
+                <input id="log-search" placeholder="Search message or key" data-i18n-placeholder="filters.searchLogs" />
+                <button id="apply-log-filter" type="button" class="secondary" data-i18n="actions.apply">Apply</button>
+                <button id="jump-latest-logs" type="button" class="secondary" data-i18n="actions.latest">Latest</button>
+              </div>
+              <div class="table-panel l4">
+                <table class="data-table" id="logs-table-shell">
+                  <thead>
+                    <tr>
+                      <th data-i18n="table.timestamp">Timestamp</th>
+                      <th data-i18n="table.exchange">Exchange</th>
+                      <th data-i18n="table.type">Type</th>
+                      <th data-i18n="table.key">Key</th>
+                      <th data-i18n="table.pnl">PnL</th>
+                      <th data-i18n="table.message">Message</th>
+                    </tr>
+                  </thead>
+                  <tbody id="logs-table"></tbody>
+                </table>
+              </div>
+              <div class="pagination-bar">
+                <div class="page-size-group" id="log-limit-group">
+                  <button type="button" class="page-size" data-limit="50">50</button>
+                  <button type="button" class="page-size is-active" data-limit="100">100</button>
+                  <button type="button" class="page-size" data-limit="200">200</button>
+                </div>
+                <div class="pagination-info" id="logs-summary">0 records</div>
+                <div class="page-number-group" id="log-pages"></div>
+              </div>
+            </div>
+            <aside class="detail-drawer l4" id="log-detail-drawer">
+              <div class="drawer-empty" id="log-detail-empty" data-i18n="logs.selectLog">Select a log entry to inspect raw details, linked ids, and exchange responses.</div>
+              <div id="log-detail-content" class="hidden">
+                <div class="drawer-header">
+                  <h3 data-i18n="logs.detailTitle">Log Detail</h3>
+                </div>
+                <div id="log-detail-meta" class="detail-grid"></div>
+                <pre id="log-detail-json" class="json-block"></pre>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="panel l3" id="tab-positions">
+          <div class="panel-header">
+            <div>
+              <h2 data-i18n="positions.title">Equity List</h2>
+              <p data-i18n="positions.subtitle">Exposure, unrealized pnl, leverage, freshness, and display-currency notional analytics.</p>
+            </div>
+            <div class="header-actions">
+              <button id="refresh-positions" type="button" class="secondary" data-i18n="actions.sync">Sync</button>
+            </div>
+          </div>
+          <div class="overview-grid l4 equity-summary-grid" id="equity-summary-grid"></div>
+          <div class="table-panel l4">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="table.instrument">Instrument</th>
+                  <th data-i18n="table.exchange">Exchange</th>
+                  <th data-i18n="table.exposure">Exposure</th>
+                  <th data-i18n="table.entry">Entry</th>
+                  <th data-i18n="table.pnl">PnL</th>
+                  <th data-i18n="table.leverage">Leverage</th>
+                  <th data-i18n="table.freshness">Freshness</th>
+                  <th data-i18n="table.captured">Captured</th>
+                </tr>
+              </thead>
+              <tbody id="positions-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <aside class="global-drawer hidden l4" id="audit-drawer" aria-live="polite">
+        <div class="drawer-header">
+          <div>
+            <p class="eyebrow" data-i18n="studio.auditTrail">Execution Audit Trail</p>
+            <h3 id="audit-drawer-title">Execution Audit</h3>
+          </div>
+          <button id="close-audit-drawer" type="button" class="icon-button" aria-label="Close audit drawer">脳</button>
+        </div>
+        <div class="drawer-section">
+          <div id="audit-summary" class="detail-grid"></div>
+        </div>
+        <div class="drawer-section">
+          <h4 data-i18n="studio.attemptTimeline">Attempt Timeline</h4>
+          <div id="audit-timeline" class="timeline"></div>
+        </div>
+        <div class="drawer-section">
+          <h4 data-i18n="studio.relatedLogs">Related Logs</h4>
+          <div id="audit-related-logs" class="inline-list"></div>
+        </div>
+      </aside>
+
+      <section class="market-ticker l2" id="market-ticker" aria-live="polite"></section>
+
+      <footer class="footer l1">
+        <span class="footer-brand">TradeNodeX</span>
+        <span>Binance, Bybit, OKX, Coinbase, Kraken, BitMEX, and Gate.io names are used only to describe exchange connectivity targets. Their trademarks remain the property of their respective owners. (c) 2026 TradeNodeX.</span>
+      </footer>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="signal-modal" role="dialog" aria-modal="true" aria-labelledby="signal-modal-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow" data-i18n="signals.modalKicker">Signal Registry</p>
+            <h3 id="signal-modal-title">Create Signal</h3>
+          </div>
+          <button id="close-signal-modal" type="button" class="icon-button" aria-label="Close signal modal">脳</button>
+        </div>
+        <div class="security-banner subtle">
+          <ul class="security-list">
+            <li data-i18n="registry.ruleTradeOnly">Enable trade permissions only.</li>
+            <li data-i18n="registry.ruleNoWithdrawals">Never enable withdrawals.</li>
+            <li data-i18n="registry.ruleOkxPassphrase">OKX requires API passphrase.</li>
+            <li data-i18n="registry.ruleEncrypted">Credentials are stored encrypted at rest.</li>
+          </ul>
+        </div>
+        <form id="signal-form" class="modal-form">
+          <input type="hidden" name="signal_source_id" />
+          <div class="form-grid two-col">
+            <label><span data-i18n="table.name">Name</span><input name="name" required /></label>
+            <label><span data-i18n="signals.sourceAccount">Source Account</span><input name="source_account" required /></label>
+            <label>
+              <span data-i18n="table.exchange">Exchange</span>
+              <select name="exchange">
+                <option value="BINANCE">BINANCE</option>
+                <option value="BYBIT">BYBIT</option>
+                <option value="OKX">OKX</option>
+                <option value="COINBASE">COINBASE</option>
+                <option value="KRAKEN">KRAKEN</option>
+                <option value="BITMEX">BITMEX</option>
+                <option value="GATEIO">GATEIO</option>
+              </select>
+            </label>
+            <label>
+              <span data-i18n="common.environment">Environment</span>
+              <select name="environment">
+                <option value="MAINNET">MAINNET</option>
+                <option value="TESTNET">TESTNET</option>
+                <option value="DEMO">DEMO</option>
+              </select>
+            </label>
+            <label><span data-i18n="table.pairs">Pairs Scope</span><input name="pairs_scope" value="ALL" /></label>
+            <label>
+              <span data-i18n="signals.defaultCopyMode">Default Copy Mode</span>
+              <select name="default_copy_mode">
+                <option value="EXACT">1:1 Exact</option>
+                <option value="SCALE">Scale</option>
+              </select>
+            </label>
+            <label><span data-i18n="signals.defaultScale">Default Scale</span><input name="default_scale_factor" value="1" /></label>
+            <label><span data-i18n="signals.defaultLeverage">Default Leverage</span><input name="default_leverage" /></label>
+            <label>
+              <span data-i18n="studio.marginMode">Margin Mode</span>
+              <select name="margin_mode">
+                <option value="ISOLATED">ISOLATED</option>
+                <option value="CROSS">CROSS</option>
+              </select>
+            </label>
+            <label class="toggle-pill modal-toggle"><input type="checkbox" name="hedge_mode" /><span data-i18n="studio.hedgeMode">Hedge Mode</span></label>
+            <label class="toggle-pill modal-toggle"><input type="checkbox" name="broadcast_trade_enabled" /><span data-i18n="studio.broadcastTrade">Broadcast Trade</span></label>
+          </div>
+          <label><span data-i18n="common.description">Description</span><textarea name="description" rows="3"></textarea></label>
+          <div class="form-grid two-col">
+            <label class="secret-field"><span data-i18n="registry.masterApiKey">Master API Key</span><input name="api_key" /></label>
+            <label class="secret-field"><span data-i18n="registry.masterApiSecret">Master API Secret</span><input name="api_secret" /></label>
+            <label class="secret-field"><span data-i18n="registry.masterApiPassphrase">Master API Passphrase</span><input name="api_passphrase" placeholder="Required for OKX when enabled" data-i18n-placeholder="registry.passphraseHint" /></label>
+          </div>
+          <div class="secret-note" data-i18n="registry.encryptedHint">Sensitive fields are encrypted at rest and should not include withdrawal rights.</div>
+          <div class="modal-actions">
+            <button id="signal-validate" type="button" class="secondary" data-i18n="actions.validateApi">Validate API</button>
+            <button id="signal-delete" type="button" class="danger" data-i18n="actions.delete">Delete</button>
+            <button type="submit" class="primary" data-i18n="actions.saveSignal">Save Signal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="follower-modal" role="dialog" aria-modal="true" aria-labelledby="follower-modal-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow" data-i18n="registry.modalKicker">API Accounts</p>
+            <h3 id="follower-modal-title">Create API Account</h3>
+          </div>
+          <button id="close-follower-modal" type="button" class="icon-button" aria-label="Close API modal">脳</button>
+        </div>
+        <div class="security-banner subtle">
+          <ul class="security-list">
+            <li data-i18n="registry.ruleTradeOnly">Enable trade permissions only.</li>
+            <li data-i18n="registry.ruleNoWithdrawals">Never enable withdrawals.</li>
+            <li data-i18n="registry.ruleWhitelist">Use recommended IP whitelist where supported.</li>
+            <li data-i18n="registry.ruleOkxPassphrase">OKX requires API passphrase.</li>
+          </ul>
+        </div>
+        <form id="follower-form" class="modal-form">
+          <input type="hidden" name="follower_id" />
+          <div class="form-grid two-col">
+            <label><span data-i18n="table.name">Name</span><input name="name" required /></label>
+            <label>
+              <span data-i18n="table.exchange">Exchange</span>
+              <select name="exchange">
+                <option value="BINANCE">BINANCE</option>
+                <option value="BYBIT">BYBIT</option>
+                <option value="OKX">OKX</option>
+                <option value="COINBASE">COINBASE</option>
+                <option value="KRAKEN">KRAKEN</option>
+                <option value="BITMEX">BITMEX</option>
+                <option value="GATEIO">GATEIO</option>
+              </select>
+            </label>
+            <label>
+              <span data-i18n="common.environment">Environment</span>
+              <select name="environment">
+                <option value="MAINNET">MAINNET</option>
+                <option value="TESTNET">TESTNET</option>
+                <option value="DEMO">DEMO</option>
+              </select>
+            </label>
+            <label><span data-i18n="studio.leverage">Leverage</span><input name="leverage" value="10" /></label>
+            <label>
+              <span data-i18n="studio.marginMode">Margin Mode</span>
+              <select name="margin_mode">
+                <option value="ISOLATED">ISOLATED</option>
+                <option value="CROSS">CROSS</option>
+              </select>
+            </label>
+            <label class="toggle-pill modal-toggle"><input type="checkbox" name="hedge_mode" /><span data-i18n="studio.hedgeMode">Hedge Mode</span></label>
+          </div>
+          <div class="form-grid two-col">
+            <label class="secret-field"><span data-i18n="registry.apiKey">API Key</span><input name="api_key" /></label>
+            <label class="secret-field"><span data-i18n="registry.apiSecret">API Secret</span><input name="api_secret" /></label>
+            <label class="secret-field"><span data-i18n="registry.apiPassphrase">API Passphrase</span><input name="api_passphrase" placeholder="Required for OKX when enabled" data-i18n-placeholder="registry.passphraseHint" /></label>
+          </div>
+          <div class="secret-note" data-i18n="registry.encryptedHint">Sensitive fields are encrypted at rest and should not include withdrawal rights.</div>
+          <div class="modal-actions">
+            <button id="follower-delete" type="button" class="danger hidden" data-i18n="actions.delete">Delete</button>
+            <button type="submit" class="primary" data-i18n="actions.saveApiAccount">Save API Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

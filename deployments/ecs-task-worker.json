@@ -1,0 +1,40 @@
+{
+  "family": "private-copytrading-worker",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/privateCopyTradingTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "worker",
+      "image": "<ACCOUNT_ID>.dkr.ecr.ap-northeast-1.amazonaws.com/private-copytrading:latest",
+      "essential": true,
+      "command": ["python", "-m", "copytrading_app.workers.runtime"],
+      "environment": [
+        { "name": "QUEUE_BACKEND", "value": "sqs" },
+        { "name": "KMS_BACKEND", "value": "aws" },
+        { "name": "AWS_REGION", "value": "ap-northeast-1" },
+        { "name": "DEFAULT_ENVIRONMENT", "value": "MAINNET" }
+      ],
+      "secrets": [
+        { "name": "DATABASE_URL", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/database-url" },
+        { "name": "REDIS_URL", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/redis-url" },
+        { "name": "SQS_QUEUE_URL_NORMAL", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/sqs-normal" },
+        { "name": "SQS_QUEUE_URL_RISK", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/sqs-risk" },
+        { "name": "SQS_QUEUE_URL_RECOVERY", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/sqs-recovery" },
+        { "name": "KMS_KEY_ID", "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:<ACCOUNT_ID>:secret:copytrading/kms-key-id" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/private-copytrading-worker",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
+
