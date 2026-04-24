@@ -26,7 +26,6 @@ python -m copytrading_app.workers.runtime
 打开界面：
 
 - 主界面：[http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- 回退界面：[http://127.0.0.1:8000/legacy](http://127.0.0.1:8000/legacy)
 
 注意：网页只是控制台。自动监听、队列消费和真实执行依赖后台 worker 运行。
 
