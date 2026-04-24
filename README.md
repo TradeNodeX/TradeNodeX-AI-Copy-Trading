@@ -1,5 +1,13 @@
 # TradeNodeX AI Copy Trading Control Center
 
+![License](https://img.shields.io/github/license/TradeNodeX/TradeNodeX-AI-Copy-Trading)
+![Stars](https://img.shields.io/github/stars/TradeNodeX/TradeNodeX-AI-Copy-Trading?style=social)
+![Forks](https://img.shields.io/github/forks/TradeNodeX/TradeNodeX-AI-Copy-Trading?style=social)
+![Last Commit](https://img.shields.io/github/last-commit/TradeNodeX/TradeNodeX-AI-Copy-Trading)
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
+![React](https://img.shields.io/badge/React-Control%20Plane-61DAFB)
+
 TradeNodeX is a self-hosted, single-tenant copy-trading control center for private operator use. The current repository ships a FastAPI backend, a React control plane, execution workers, audit logs, equity analytics, multi-language UI support, and multi-exchange connectivity.
 
 This edition is designed for:
@@ -10,6 +18,8 @@ This edition is designed for:
 - controlled testing, staged rollout, and small-to-medium scale validation
 
 It is not a managed SaaS product and it does not custody funds.
+
+If this project is useful to you, a GitHub star helps more builders discover it.
 
 ## Core capabilities
 
@@ -152,6 +162,12 @@ The source release should include:
 ## Documentation
 
 - Chinese user guide: [USER_GUIDE_CN.md](./USER_GUIDE_CN.md)
+- Architecture overview: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+- Roadmap: [ROADMAP.md](./ROADMAP.md)
+- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Security policy: [SECURITY.md](./SECURITY.md)
+- Community guide: [docs/COMMUNITY.md](./docs/COMMUNITY.md)
+- Repository marketing checklist: [docs/REPOSITORY_MARKETING.md](./docs/REPOSITORY_MARKETING.md)
 - Legal / use notice: [NOTICE.md](./NOTICE.md)
 - License: [LICENSE](./LICENSE)
 
