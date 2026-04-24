@@ -66,7 +66,6 @@ python -m copytrading_app.workers.runtime
 ### 4. Open the UI
 
 - Main UI: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- Legacy fallback UI: [http://127.0.0.1:8000/legacy](http://127.0.0.1:8000/legacy)
 
 ## Runtime requirements
 
@@ -100,7 +99,7 @@ python -m copytrading_app.workers.runtime
 
 - Binance and Bybit currently remain the most mature private-stream paths.
 - OKX, Kraken, BitMEX, Gate.io, and Coinbase Advanced now include private-stream connection logic plus REST reconciliation fallback, but they should still be treated as newer exchange paths until validated in your own environment.
-- The repository includes automated tests and control-plane coverage, but it does not yet claim validated 88-account or 200-account production readiness.
+- The repository includes automated tests and control-plane coverage, but it does not yet claim validated 1000-account production readiness.
 - Exchange testnet capabilities are not uniform. Some exchanges may require demo or small-size mainnet verification for complete end-to-end validation.
 
 ## Development and test
@@ -149,18 +148,6 @@ The source release should include:
 - `NOTICE.md`
 - `LICENSE`
 - `.env.example`
-
-The source release must not include:
-
-- `.env`
-- local database files such as `copytrading.db`
-- exchange API keys, secrets, passphrases, or private key material
-- logs and screenshots containing secrets
-- `frontend/node_modules/`
-- `frontend/dist/`
-- build caches
-
-Before publishing a public repository or release artifact, rotate any exchange API credentials that were ever pasted into chats, tickets, issue trackers, or local notes.
 
 ## Documentation
 
