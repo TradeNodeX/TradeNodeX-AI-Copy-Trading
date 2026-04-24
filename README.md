@@ -143,22 +143,6 @@ python scripts/release_gate.py
 
 The release gate scans project-owned source and documentation files for blocked secret patterns and disallowed product-reference residue. Dependency folders and generated frontend artifacts are intentionally excluded.
 
-## Open-source free edition packaging
-
-The source release should include:
-
-- `src/`
-- `frontend/src/`
-- `tests/`
-- `deployments/`
-- `scripts/`
-- `sql/`
-- `README.md`
-- `USER_GUIDE_CN.md`
-- `NOTICE.md`
-- `LICENSE`
-- `.env.example`
-
 ## Documentation
 
 - Chinese user guide: [USER_GUIDE_CN.md](./USER_GUIDE_CN.md)
