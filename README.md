@@ -151,7 +151,6 @@ The release gate scans project-owned source and documentation files for blocked 
 - Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
 - Security policy: [SECURITY.md](./SECURITY.md)
 - Community guide: [docs/COMMUNITY.md](./docs/COMMUNITY.md)
-- Repository marketing checklist: [docs/REPOSITORY_MARKETING.md](./docs/REPOSITORY_MARKETING.md)
 - Legal / use notice: [NOTICE.md](./NOTICE.md)
 - License: [LICENSE](./LICENSE)
 
